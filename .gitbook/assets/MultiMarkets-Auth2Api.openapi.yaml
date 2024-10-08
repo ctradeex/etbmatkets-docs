@@ -1,0 +1,315 @@
+openapi: 3.1.0
+info:
+  title: MultiMarkets-Auth2Api
+  description: 此API可以实现业务共享账户体系到周边系统，例如代理、活动等
+  version: 1.0.0
+tags: []
+paths:
+  /auth2/code:
+    post:
+      summary: 获取授权码
+      deprecated: false
+      description: >
+        授权码接口，需要在MulitMarket白标客户端下有用户授权三方系统获取授权码Code，用户同意后，返回Code给三方平台，三方平台根据appId、appSecret、code信息通过调用后端接口获取访问用户信息的有效访问令牌，最后根据此令牌可以获取用户基本信息，并进行授权绑定。
+
+        步骤：
+
+        1、打开授权页面获取授权码
+
+        https://www.headline.net/en-US/auth2/code?appId=088b591f5fd735be62608a272f4d971f&thirdAppType=HG&url=https%3A%2F%2Fwww.hg.com%2Flogin
+
+        以上授权确认后会跳转至
+
+        https://www.hg.com/login?code=********&app=headline
+
+
+        2、三方平台通过授权码换取访问令牌
+
+        通过获取code，后台调用接口换取 accessToken
+
+
+        3、根据访问令牌获取用户信息进行账号绑定
+
+        三方平台后台根据accessToken获取用户信息
+
+      tags: []
+      parameters:
+        - name: trace
+          in: header
+          description: ''
+          required: true
+          example: '{{mock_trace}}'
+          schema:
+            type: string
+        - name: token
+          in: header
+          description: ''
+          required: true
+          example: '{{Token}}'
+          schema:
+            type: string
+        - name: company
+          in: header
+          description: ''
+          required: true
+          example: '{{company}}'
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appId:
+                  type: string
+                  title: Cats2系统，第三方系统应用Id
+                thirdAppType:
+                  type: string
+                  title: 第三方应用类型
+              required:
+                - appId
+                - thirdAppType
+            example:
+              appId: 088b591f5fd735be62608a272f4d971f
+              thirdAppType: mall-x
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    bizCode: ''
+                    code: '0'
+                    msg: Success
+                    tm: 0
+                    trace: ''
+                    msgParams: null
+                    data: f25bcfc4-0b0c-48ac-adab-ef45714d9543
+                    ok: true
+                    fail: false
+      security: []
+  /auth2/token:
+    post:
+      summary: 获取访问令牌
+      deprecated: false
+      description: >
+        访问令牌接口，需要通过用户授权后返回的授权码Code以及appId、appSecret信息通过调用接口换取访问令牌，最后根据此令牌可以获取用户基本信息，并进行授权绑定。
+
+        步骤：
+
+        1、打开授权页面获取授权码
+
+        2、三方平台通过授权码换取访问令牌
+
+        3、根据访问令牌获取用户信息进行账号绑定
+      tags: []
+      parameters:
+        - name: trace
+          in: header
+          description: ''
+          required: true
+          example: '{{mock_trace}}'
+          schema:
+            type: string
+        - name: company
+          in: header
+          description: ''
+          required: true
+          example: '{{company}}'
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appId:
+                  type: string
+                  title: Cats2系统，第三方系统应用Id
+                appSecret:
+                  type: string
+                  title: Cats2系统，第三方系统应用秘钥
+                code:
+                  type: string
+                  title: 授权码
+              required:
+                - appId
+                - code
+                - appSecret
+            example:
+              appId: 088b591f5fd735be62608a272f4d971f
+              code: e06a0a7f-9332-4e5a-a539-e2dc976fd08e
+              appSecret: 262f13697a56fe059b1daa0ba2ec7b6b
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    bizCode: ''
+                    code: '0'
+                    msg: Success
+                    tm: 0
+                    trace: ''
+                    msgParams: null
+                    data:
+                      accessToken: 650c1011-db8f-49bb-91e2-75ef207d2e4e
+                      refreshToken: 9a1c03e9-cfe0-4796-8a73-20d53f6b399e
+                    ok: true
+                    fail: false
+      security: []
+  /auth2/user:
+    post:
+      summary: 获取用户信息
+      deprecated: false
+      description: >
+        获取用户信息接口，根据获取的访问令牌，可以获取用户基本信息，用户用户信息的校验以及账户的绑定。
+
+        步骤：
+        
+        1、打开授权页面获取授权码
+        
+        2、三方平台通过授权码换取访问令牌
+        
+        3、根据访问令牌获取用户信息进行账号绑定
+      tags: []
+      parameters:
+        - name: trace
+          in: header
+          description: ''
+          required: true
+          example: '{{mock_trace}}'
+          schema:
+            type: string
+        - name: company
+          in: header
+          description: ''
+          required: true
+          example: '{{company}}'
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  title: 客户令牌
+              required:
+                - accessToken
+            example:
+              accessToken: 6f60d5e7-9b31-429c-84f1-a0a927d40961
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    msg: Success
+                    fail: false
+                    trace: x-25h47h2-l48dy-ssxh0o1-88471-1678261704
+                    code: '0'
+                    data:
+                      thirdUserId: 666666660,12345678901234567890,123456789012340,666666660
+                      accountId: 0
+                      thirdLoginSource: telegram,google,facebook,telegram,3
+                      customerNo: '86021063'
+                      email: null
+                    bizCode: ''
+                    tm: 76220395
+                    msgParams: null
+                    ok: true
+      security: []
+  /auth2/refresh:
+    post:
+      summary: 刷新访问令牌
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: trace
+          in: header
+          description: ''
+          required: true
+          example: '{{mock_trace}}'
+          schema:
+            type: string
+        - name: token
+          in: header
+          description: ''
+          required: true
+          example: '{{Token}}'
+          schema:
+            type: string
+        - name: company
+          in: header
+          description: ''
+          required: true
+          example: '{{company}}'
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  title: 刷新令牌
+              required:
+                - refreshToken
+            example:
+              refreshToken: b497129d-c0ec-452d-94aa-be5c278fe8f6
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                '1':
+                  summary: 成功示例
+                  value:
+                    bizCode: ''
+                    code: '0'
+                    msg: Success
+                    tm: 0
+                    trace: ''
+                    msgParams: null
+                    data:
+                      accessToken: 25c7c935-d1db-445d-a0db-1d67d30cb175
+                      refreshToken: 727c00ff-e785-49cd-bfc8-86d8a3262a83
+                    ok: true
+                    fail: false
+      security: []
+components:
+  schemas: {}
+  securitySchemes: {}
+servers:
+  - url: https://prepc-real.headline.net/cats-gateway-auth2
+    description: PRE环境-公司421

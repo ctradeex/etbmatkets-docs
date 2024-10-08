@@ -1,0 +1,8 @@
+---
+icon: database
+---
+
+# Basic data
+
+
+

@@ -1,0 +1,328 @@
+openapi: 3.1.0
+info:
+  title: MultiMarkets-Auth2Api
+  description: This API can implement a business shared account system to
+    surrounding systems, such as agents, activities, etc.
+  version: 1.0.0
+tags: []
+paths:
+  /auth2/code:
+    post:
+      summary: Obtain Authorization Code
+      deprecated: false
+      description: >
+        The authorization code interface requires user authorization from the
+        MulitMarket white-label client to obtain the authorization code. After
+        the user agrees, the code is returned to the third-party platform. The
+        third-party platform can then obtain a valid access token for accessing
+        user information by calling the backend interface with the appId,
+        appSecret, and code information. Finally, this token can be used to
+        retrieve basic user information and perform authorization binding. 
+
+
+        Steps:
+
+        
+        1. Open the authorization page to obtain the authorization code
+
+        https://www.headline.net/en-US/auth2/code?appId=088b591f5fd735be62608a272f4d971f&thirdAppType=HG&url=https%3A%2F%2Fwww.hg.com%2Flogin
+
+        After confirming the authorization, you will be redirected to
+
+        https://www.hg.com/login?code=********&app=headline
+
+
+        2. The third-party platform exchanges the authorization code for an
+        access token
+
+        By obtaining the code, the backend calls the interface to exchange for
+        accessToken
+
+
+        3. Obtain user information based on the access token for account binding
+
+        The third-party platform backend retrieves user information based on
+        accessToken
+
+      tags: []
+      parameters:
+        - name: trace
+          in: header
+          description: ''
+          required: true
+          example: '{{mock_trace}}'
+          schema:
+            type: string
+        - name: token
+          in: header
+          description: ''
+          required: true
+          example: '{{Token}}'
+          schema:
+            type: string
+        - name: company
+          in: header
+          description: ''
+          required: true
+          example: '{{company}}'
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appId:
+                  type: string
+                  title: Cats2 System, Third-party System Application ID
+                thirdAppType:
+                  type: string
+                  title: Third-party Application Type
+              required:
+                - appId
+                - thirdAppType
+            example:
+              appId: 088b591f5fd735be62608a272f4d971f
+              thirdAppType: mall-x
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                '1':
+                  summary: Success Example
+                  value:
+                    bizCode: ''
+                    code: '0'
+                    msg: Success
+                    tm: 0
+                    trace: ''
+                    msgParams: null
+                    data: f25bcfc4-0b0c-48ac-adab-ef45714d9543
+                    ok: true
+                    fail: false
+      security: []
+  /auth2/token:
+    post:
+      summary: Obtain Access Token
+      deprecated: false
+      description: >-
+        The access token interface requires the authorization code Code returned
+        after user authorization, along with appId and appSecret information, to
+        call the interface to exchange for the access token. Finally, this token
+        can be used to obtain basic user information and perform authorization
+        binding. 
+
+        # Steps:
+
+        ## 1. Open the authorization page to obtain the authorization code
+
+        ## 2. The third-party platform exchanges the authorization code for an
+        access token
+
+        ## 3. Obtain user information based on the access token for account binding
+      tags: []
+      parameters:
+        - name: trace
+          in: header
+          description: ''
+          required: true
+          example: '{{mock_trace}}'
+          schema:
+            type: string
+        - name: company
+          in: header
+          description: ''
+          required: true
+          example: '{{company}}'
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appId:
+                  type: string
+                  title: Cats2 System, Third-party System Application ID
+                appSecret:
+                  type: string
+                  title: Cats2 System, Third-party System Application Secret Key
+                code:
+                  type: string
+                  title: Authorization Code
+              required:
+                - appId
+                - code
+                - appSecret
+            example:
+              appId: 088b591f5fd735be62608a272f4d971f
+              code: e06a0a7f-9332-4e5a-a539-e2dc976fd08e
+              appSecret: 262f13697a56fe059b1daa0ba2ec7b6b
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                '1':
+                  summary: Success Example
+                  value:
+                    bizCode: ''
+                    code: '0'
+                    msg: Success
+                    tm: 0
+                    trace: ''
+                    msgParams: null
+                    data:
+                      accessToken: 650c1011-db8f-49bb-91e2-75ef207d2e4e
+                      refreshToken: 9a1c03e9-cfe0-4796-8a73-20d53f6b399e
+                    ok: true
+                    fail: false
+      security: []
+  /auth2/user:
+    post:
+      summary: Get User Information
+      deprecated: false
+      description: |-
+        Get User Information API, based on the obtained access token, can retrieve basic user information, verify user information, and bind accounts. 
+        # Steps:
+        ## 1. Open the authorization page to obtain the authorization code
+        ## 2. The third-party platform exchanges the authorization code for an access token
+        ## 3. Obtain user information based on the access token for account binding
+      tags: []
+      parameters:
+        - name: trace
+          in: header
+          description: ''
+          required: true
+          example: '{{mock_trace}}'
+          schema:
+            type: string
+        - name: company
+          in: header
+          description: ''
+          required: true
+          example: '{{company}}'
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  title: Client Token
+              required:
+                - accessToken
+            example:
+              accessToken: 6f60d5e7-9b31-429c-84f1-a0a927d40961
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                '1':
+                  summary: Success Example
+                  value:
+                    msg: Success
+                    fail: false
+                    trace: x-25h47h2-l48dy-ssxh0o1-88471-1678261704
+                    code: '0'
+                    data:
+                      thirdUserId: 666666660,12345678901234567890,123456789012340,666666660
+                      accountId: 0
+                      thirdLoginSource: telegram,google,facebook,telegram,3
+                      customerNo: '86021063'
+                      email: null
+                    bizCode: ''
+                    tm: 76220395
+                    msgParams: null
+                    ok: true
+      security: []
+  /auth2/refresh:
+    post:
+      summary: Refresh Access Token
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: trace
+          in: header
+          description: ''
+          required: true
+          example: '{{mock_trace}}'
+          schema:
+            type: string
+        - name: token
+          in: header
+          description: ''
+          required: true
+          example: '{{Token}}'
+          schema:
+            type: string
+        - name: company
+          in: header
+          description: ''
+          required: true
+          example: '{{company}}'
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  title: Refresh Token
+              required:
+                - refreshToken
+            example:
+              refreshToken: b497129d-c0ec-452d-94aa-be5c278fe8f6
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                '1':
+                  summary: Success Example
+                  value:
+                    bizCode: ''
+                    code: '0'
+                    msg: Success
+                    tm: 0
+                    trace: ''
+                    msgParams: null
+                    data:
+                      accessToken: 25c7c935-d1db-445d-a0db-1d67d30cb175
+                      refreshToken: 727c00ff-e785-49cd-bfc8-86d8a3262a83
+                    ok: true
+                    fail: false
+      security: []
+components:
+  schemas: {}
+  securitySchemes: {}
+servers:
+  - url: https://prepc-real.headline.net/cats-gateway-auth2
+    description: PRE Environment - Company 421
